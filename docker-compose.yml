@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  bot:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 9090 --debug 
+    #command: gunicorn --bind 0.0.0.0:9090 app.main:app -c gunicorn.conf.py --reload
+    #command: gunicorn app.main:app -c gunicorn.conf.py
+    volumes:
+      - .:/app
+    ports:
+      - 9090:9090
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./portainer-data:/data
+    ports:
+      - 9000:9000
